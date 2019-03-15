@@ -14,16 +14,19 @@ describe TicTacToe do
       expect(game.p2_score).to equal(0)
     end
 
-    it 'calls new_game' do
-      expect(game).to receive(:new_game)
-    end
-
   end
 
   describe '#new_game' do
 
     it 'sets the current player to player 1' do
       expect(game.current_player).to equal(1)
-    end  end
+    end
+
+    it 'resets the player selections' do
+      expect(game.p1_selections.length).to equal(0)
+      expect(game.p2_selections.length).to equal(0)
+    end
+
+  end
 
 end
