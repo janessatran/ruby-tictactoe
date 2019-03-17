@@ -4,9 +4,9 @@ class TicTacToe
                   [1, 4, 7], [2, 5, 8], [3, 6, 9],
                   [1, 5, 9], [3, 5, 7]]
 
-  attr_accessor :p1_score, :p2_score,
-                :p1_selections, :p2_selections,
-                :game_count, :current_player
+  attr_reader :p1_selections, :p2_selections,
+              :p1_score, :p2_score,
+              :current_player, :game_count
 
   def initialize
     @p1_score = 0
@@ -25,7 +25,7 @@ class TicTacToe
 
   def check_ready?
     puts 'Are you ready to play? (Y/N)'
-    if gets.chomp == 'Y' or gets.chomp == 'yes' or gets.chomp == 'y'
+    if gets.chomp == 'Y' || gets.chomp == 'yes' || gets.chomp == 'y'
       return true
     end
   end
@@ -84,13 +84,18 @@ class TicTacToe
     prompt_selection
   end
 
+
   def prompt_selection
-    if @current_player == 1
-      puts 'Player 1 turn: '
+    if @board.any? {|a| a.is_a? Integer}
+      if @current_player == 1
+        puts 'Player 1 turn: '
+      else
+        puts 'Player 2 turn: '
+      end
+      get_selection
     else
-      puts 'Player 2 turn: '
+      check_win
     end
-    get_selection
   end
 
   def get_selection
@@ -99,7 +104,15 @@ class TicTacToe
   end
   
   def check_selection_valid(selection)
-    return update_board(selection) unless selection.empty?
+    if selection.empty?
+      puts 'please select a a value corresponding to a free space on the board.'
+      prompt_selection
+    elsif @board[selection.to_i - 1] == 'X' || @board[selection.to_i - 1] == 'O'
+      puts 'please select a value corresponding to a FREE space on the board.'
+      prompt_selection
+    else
+      return update_board(selection)
+    end
   end
 
 
@@ -118,8 +131,8 @@ class TicTacToe
           puts 'Game Over! Player 1 wins!!!! \n'
           @p1_score += 1
           print_board
-          puts 'p1 score: ' + p1_score.to_s + "\n"
-          puts 'p1 score: ' + p2_score.to_s + "\n"
+          puts 'p1 score: ' + @p1_score.to_s + "\n"
+          puts 'p1 score: ' + @p2_score.to_s + "\n"
           puts "\n"
           new_game
         end
@@ -129,7 +142,7 @@ class TicTacToe
           @p2_score += 1
           new_game
         end
-      elsif @p1_selections.length + @p2_selections.length >= 9
+      elsif @p1_selections.length + @p2_selections.length == 9
         puts 'Tie!'
         new_game
       end
